@@ -7,7 +7,7 @@ Built-in providers:
 - OpenAI (GPT-4o, GPT-4, o1, o3, etc.)
 - Anthropic (Claude 3.5/4 Opus/Sonnet/Haiku)
 - Google (Gemini 2.0 Flash/Pro, Gemini 2.5)
-- NVIDIA NIM (Llama Nemotron, Cosmos Reason)
+- NVIDIA NIM (GLM 5.2, Minimax M3, Llama Nemotron, Cosmos Reason)
 - Groq (fast open-source inference)
 - HuggingFace Inference
 - Together AI
@@ -88,7 +88,7 @@ PROVIDERS = {
         "models_key": "data",
         "model_id_key": "id",
         "model_name_key": "id",
-        "description": "Llama Nemotron, Cosmos Reason, and NVIDIA-optimized models.",
+        "description": "GLM 5.2 , Minimax M3, Llama Nemotron, Cosmos Reason, and NVIDIA-optimized models.",
     },
     "groq": {
         "name": "Groq",
