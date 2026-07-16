@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+from agent.llm import LLMProvider, PROVIDERS
 from agent.core import GenesisAgent
 from agent.llm import LLMProvider
 from agent.memory import MemoryStore
@@ -182,6 +183,67 @@ async def execute_code(code: str, language: str = "python"):
 async def telegram_status():
     status = app.state.telegram.get_status()
     return JSONResponse(content=status)
+
+# ── Provider & Model Management (NEW) ───────────────────
+
+@app.get("/api/providers")
+async def list_providers():
+    """List all available LLM providers"""
+    providers = app.state.llm.list_providers()
+    return JSONResponse(content={"providers": providers})
+
+@app.post("/api/providers/{provider}/key")
+async def set_provider_key(provider: str, api_key: str, custom_url: str | None = None):
+    """Set API key for a provider"""
+    try:
+        app.state.llm.set_provider_key(provider, api_key, custom_url)
+        return JSONResponse(content={
+            "status": "configured",
+            "provider": provider,
+            "provider_name": PROVIDERS[provider]["name"],
+        })
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.delete("/api/providers/{provider}/key")
+async def remove_provider_key(provider: str):
+    """Remove a provider's API key"""
+    app.state.llm.remove_provider_key(provider)
+    return JSONResponse(content={"status": "removed", "provider": provider})
+
+@app.get("/api/models")
+async def list_models(provider: str | None = None):
+    """List available models — all configured providers or specific one"""
+    models = await app.state.llm.list_models(provider)
+    return JSONResponse(content={"models": models, "count": len(models)})
+
+@app.get("/api/models/active")
+async def get_active_model():
+    """Get current active provider and model"""
+    config = app.state.llm.get_active_config()
+    return JSONResponse(content=config)
+
+@app.post("/api/models/active")
+async def set_active_model(provider: str, model: str):
+    """Set the active provider and model"""
+    try:
+        app.state.llm.set_active(provider, model)
+        return JSONResponse(content={
+            "status": "activated",
+            "provider": provider,
+            "model": model,
+        })
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/models/search")
+async def search_models(query: str = ""):
+    """Search across all configured providers' models"""
+    all_models = await app.state.llm.list_models()
+    if query:
+        q = query.lower()
+        all_models = [m for m in all_models if q in m["id"].lower() or q in m.get("name", "").lower()]
+    return JSONResponse(content={"models": all_models, "query": query})
 
 # ── WebSocket (Streaming Chat) ──────────────────────────
 @app.websocket("/ws/{session_id}")
