@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --genesis-bg: #0000f2;
+  --genesis-fg: #f5f5f5;
+  --genesis-accent: #3b3bff;
+  --genesis-paper: #0a0a8a;
+  --genesis-thinking: #1a1a5e;
+  --genesis-tool: #0d0d6e;
+  --genesis-border: rgba(245, 245, 245, 0.12);
+  --genesis-muted: rgba(245, 245, 245, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--genesis-bg);
+  color: var(--genesis-fg);
+  font-family: 'Courier Prime', 'Courier New', monospace;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* PWA full-screen */
+@media (display-mode: standalone) {
+  html, body {
+    height: 100vh;
+    position: fixed;
+    overflow-y: auto;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--genesis-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--genesis-accent);
+  border-radius: 2px;
+}
+
+/* Terminal styles */
+.xterm {
+  padding: 12px;
+  height: 100%;
+}
+.xterm-viewport::-webkit-scrollbar {
+  width: 4px;
+}
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: var(--genesis-accent);
+}
+
+/* Thinking block animation */
+@keyframes thinking-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.thinking-animate {
+  animation: thinking-pulse 2s ease-in-out infinite;
+}
+
+/* Slash command popup */
+.slash-popup {
+  background: var(--genesis-paper);
+  border: 1px solid var(--genesis-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Safe area for iPhone notch */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Message animations */
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.message-enter {
+  animation: message-in 0.2s ease-out;
+}
+
+/* Tool response styling */
+.tool-response {
+  background: var(--genesis-tool);
+  border-left: 2px solid var(--genesis-accent);
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+/* Code blocks */
+pre {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: 13px;
+}
+code {
+  font-family: 'Courier Prime', 'Courier New', monospace;
+}
